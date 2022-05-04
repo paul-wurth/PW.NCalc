@@ -1,0 +1,61 @@
+# Continuous Integration (CI) and Continuous Delivery (CD) for PW.NCalc
+
+# Triggered when pushing to the "master" or "develop" branch
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - develop
+  paths:
+    exclude:
+    - .gitignore
+    - CHANGELOG.md
+    - README.md
+    - LICENSE
+
+# Triggered when opening a pull request (or pushing changes to it)
+pr:
+  branches:
+    include:
+    - '*'
+  paths:
+    exclude:
+    - .gitignore
+    - CHANGELOG.md
+    - README.md
+    - LICENSE
+
+# Use templates from the Utilities/PipelinesTemplates repository
+resources:
+  repositories:
+  - repository: PipelinesTemplates
+    type: git
+    name: Utilities/PipelinesTemplates
+
+# Pipeline name
+name: PW.OpcUa.$(Build.BuildId)
+
+stages:
+- stage: Build
+  jobs:
+  - template: /DotNet/Build+Test.yml@PipelinesTemplates
+    parameters:
+      projectTitle: PW.NCalc
+      libraryTitle: Libraries
+      libraryProjects: |
+        **/NCalc.csproj
+      testProjects: |
+        **/NCalc.Tests.csproj
+
+# Only publish package(s) from the main, master or a release branch
+- ${{ if or(in(variables['Build.SourceBranch'], 'refs/heads/main', 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')) }}:
+  - stage: Publish
+    jobs:
+    - template: /DotNet/PublishNuGet.yml@PipelinesTemplates
+      parameters:
+        projectTitle: PW.NCalc
+        packageTitle: Packages
+        environment: Publish-PW_NCalc-Env
+        packagesToPublish: |
+          **/PW.NCalc.*.nupkg

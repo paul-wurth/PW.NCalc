@@ -1,3 +1,7 @@
+# 3.1
+
+Target .NET Standard 2.0 only
+
 # 3.0
 
 Several syntax changes to the grammar:

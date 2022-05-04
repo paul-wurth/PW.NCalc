@@ -10,6 +10,7 @@
   <PropertyGroup>
     <!-- Package properties -->
     <PackageId>PW.NCalc</PackageId>
+    <Version>3.1.0</Version>
     <Authors>Sebastien Ros and contributors</Authors>
     <Copyright>Sebastien Ros and contributors</Copyright>
     <Company>https://github.com/ncalc</Company>

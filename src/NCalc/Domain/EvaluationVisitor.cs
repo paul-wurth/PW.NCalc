@@ -71,7 +71,7 @@ namespace NCalc.Domain
             {
                 mpt = GetMostPreciseType(a.GetType(), b?.GetType());
             }
-            
+
             return Comparer.Default.Compare(Convert.ChangeType(a, mpt, _cultureInfo), Convert.ChangeType(b, mpt));
         }
 
@@ -253,22 +253,22 @@ namespace NCalc.Domain
         public override void Visit(Function function)
         {
             var args = new FunctionArgs
-                           {
-                               Parameters = new Expression[function.Expressions.Length]
-                           };
+            {
+                Parameters = new Expression[function.Expressions.Length]
+            };
 
             // Don't call parameters right now, instead let the function do it as needed.
             // Some parameters shouldn't be called, for instance, in a if(), the "not" value might be a division by zero
             // Evaluating every value could produce unexpected behaviour
-            for (int i = 0; i < function.Expressions.Length; i++ )
+            for (int i = 0; i < function.Expressions.Length; i++)
             {
-                args.Parameters[i] =  new Expression(function.Expressions[i], _options, _cultureInfo);
+                args.Parameters[i] = new Expression(function.Expressions[i], _options, _cultureInfo);
                 args.Parameters[i].EvaluateFunction += EvaluateFunction;
                 args.Parameters[i].EvaluateParameter += EvaluateParameter;
 
                 // Assign the parameters of the Expression to the arguments so that custom Functions and Parameters can use them
                 args.Parameters[i].Parameters = Parameters;
-            }            
+            }
 
             // Calls external implementation
             OnEvaluateFunction(IgnoreCase ? function.Identifier.Name.ToLower() : function.Identifier.Name, args);
@@ -552,7 +552,7 @@ namespace NCalc.Domain
                     break;
 
                 #endregion
-                
+
                 #region Max
                 case "max":
 
@@ -629,7 +629,7 @@ namespace NCalc.Domain
                 #endregion
 
                 default:
-                    throw new ArgumentException("Function not found", 
+                    throw new ArgumentException("Function not found",
                         function.Identifier.Name);
             }
         }

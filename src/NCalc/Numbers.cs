@@ -6,7 +6,7 @@ namespace NCalc
     {
         private static object ConvertIfString(object s)
         {
-            if (s is String|| s is char)
+            if (s is String || s is char)
             {
                 return Decimal.Parse(s.ToString());
             }

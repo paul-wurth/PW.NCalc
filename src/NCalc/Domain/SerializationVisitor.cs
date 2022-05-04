@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Text;
 using System.Globalization;
+using System.Text;
 
 namespace NCalc.Domain
 {
@@ -11,7 +11,7 @@ namespace NCalc.Domain
         public SerializationVisitor()
         {
             Result = new StringBuilder();
-            _numberFormatInfo = new NumberFormatInfo {NumberDecimalSeparator = "."};
+            _numberFormatInfo = new NumberFormatInfo { NumberDecimalSeparator = "." };
         }
 
         public StringBuilder Result { get; protected set; }
@@ -168,10 +168,10 @@ namespace NCalc.Domain
 
             Result.Append("(");
 
-            for(int i=0; i<function.Expressions.Length; i++)
+            for (int i = 0; i < function.Expressions.Length; i++)
             {
                 function.Expressions[i].Accept(this);
-                if (i < function.Expressions.Length-1)
+                if (i < function.Expressions.Length - 1)
                 {
                     Result.Remove(Result.Length - 1, 1);
                     Result.Append(", ");
@@ -200,11 +200,11 @@ namespace NCalc.Domain
             {
                 Result.Append("(");
                 expression.Accept(this);
-                
+
                 // trim spaces before adding a closing paren
-                while(Result[Result.Length - 1] == ' ')
+                while (Result[Result.Length - 1] == ' ')
                     Result.Remove(Result.Length - 1, 1);
-                
+
                 Result.Append(") ");
             }
         }

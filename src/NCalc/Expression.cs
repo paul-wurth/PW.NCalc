@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Antlr.Runtime;
+using NCalc.Domain;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using NCalc.Domain;
-using Antlr.Runtime;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
@@ -38,7 +38,7 @@ namespace NCalc
         public Expression(string expression, EvaluateOptions options, CultureInfo cultureInfo)
         {
             if (String.IsNullOrEmpty(expression))
-                throw new 
+                throw new
                     ArgumentException("Expression can't be empty", "expression");
 
             OriginalExpression = expression;
@@ -69,8 +69,8 @@ namespace NCalc
         public static bool CacheEnabled
         {
             get { return _cacheEnabled; }
-            set 
-            { 
+            set
+            {
                 _cacheEnabled = value;
 
                 if (!CacheEnabled)
@@ -129,7 +129,7 @@ namespace NCalc
                         Trace.TraceInformation("Expression retrieved from cache: " + expression);
                         var wr = _compiledExpressions[expression];
                         logicalExpression = wr.Target as LogicalExpression;
-                    
+
                         if (wr.IsAlive && logicalExpression != null)
                         {
                             return logicalExpression;
@@ -192,7 +192,7 @@ namespace NCalc
                 // In case HasErrors() is called multiple times for the same expression
                 return ParsedExpression != null && Error != null;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Error = e.Message;
                 return true;
@@ -285,7 +285,7 @@ namespace NCalc
 
             ParsedExpression.Accept(visitor);
             return visitor.Result;
-            
+
         }
 
         public event EvaluateFunctionHandler EvaluateFunction;

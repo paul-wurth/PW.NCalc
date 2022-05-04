@@ -219,7 +219,7 @@ namespace NCalc
             }
 
 
-            var visitor = new EvaluationVisitor(Options, CultureInfo);
+            var visitor = NCalcSettings.EvaluationVisitorFactory.Create(Options, CultureInfo);
             visitor.EvaluateFunction += EvaluateFunction;
             visitor.EvaluateParameter += EvaluateParameter;
             visitor.Parameters = Parameters;

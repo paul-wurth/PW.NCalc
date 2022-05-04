@@ -1,6 +1,7 @@
 # 3.1
 
-Target .NET Standard 2.0 only
+* Target .NET Standard 2.0 only
+* Allow using custom EvaluationVisitor
 
 # 3.0
 

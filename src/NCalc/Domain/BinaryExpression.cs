@@ -15,7 +15,7 @@ namespace NCalc.Domain
 
         public BinaryExpressionType Type { get; set; }
 
-        public override void Accept(LogicalExpressionVisitor visitor)
+        public override void Accept(ILogicalExpressionVisitor visitor)
         {
             visitor.Visit(this);
         }

@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace NCalc.Domain
 {
-    public class EvaluationVisitor : LogicalExpressionVisitor
+    public class EvaluationVisitor : IEvaluationVisitor
     {
         private delegate T Func<T>();
 
@@ -32,7 +32,7 @@ namespace NCalc.Domain
             return Result;
         }
 
-        public override void Visit(LogicalExpression expression)
+        public void Visit(LogicalExpression expression)
         {
             throw new Exception("The method or operation is not implemented.");
         }
@@ -75,7 +75,7 @@ namespace NCalc.Domain
             return Comparer.Default.Compare(Convert.ChangeType(a, mpt, _cultureInfo), Convert.ChangeType(b, mpt));
         }
 
-        public override void Visit(TernaryExpression expression)
+        public void Visit(TernaryExpression expression)
         {
             // Evaluates the left expression and saves the value
             expression.LeftExpression.Accept(this);
@@ -98,7 +98,7 @@ namespace NCalc.Domain
             return typeCode == TypeCode.Decimal || typeCode == TypeCode.Double || typeCode == TypeCode.Single;
         }
 
-        public override void Visit(BinaryExpression expression)
+        public void Visit(BinaryExpression expression)
         {
             // simulate Lazy<Func<>> behavior for late evaluation
             object leftValue = null;
@@ -220,7 +220,7 @@ namespace NCalc.Domain
             }
         }
 
-        public override void Visit(UnaryExpression expression)
+        public void Visit(UnaryExpression expression)
         {
             // Recursively evaluates the underlying expression
             expression.Expression.Accept(this);
@@ -245,12 +245,12 @@ namespace NCalc.Domain
             }
         }
 
-        public override void Visit(ValueExpression expression)
+        public void Visit(ValueExpression expression)
         {
             Result = expression.Value;
         }
 
-        public override void Visit(Function function)
+        public void Visit(Function function)
         {
             var args = new FunctionArgs
             {
@@ -660,7 +660,7 @@ namespace NCalc.Domain
                 EvaluateFunction(name, args);
         }
 
-        public override void Visit(Identifier parameter)
+        public void Visit(Identifier parameter)
         {
             if (Parameters.ContainsKey(parameter.Name))
             {

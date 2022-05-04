@@ -15,7 +15,7 @@
 
         public LogicalExpression RightExpression { get; set; }
 
-        public override void Accept(LogicalExpressionVisitor visitor)
+        public override void Accept(ILogicalExpressionVisitor visitor)
         {
             visitor.Visit(this);
         }

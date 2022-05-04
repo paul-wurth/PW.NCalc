@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NCalc.Domain
 {
-    public class SerializationVisitor : LogicalExpressionVisitor
+    public class SerializationVisitor : ILogicalExpressionVisitor
     {
         private readonly NumberFormatInfo _numberFormatInfo;
 
@@ -16,12 +16,12 @@ namespace NCalc.Domain
 
         public StringBuilder Result { get; protected set; }
 
-        public override void Visit(LogicalExpression expression)
+        public void Visit(LogicalExpression expression)
         {
             throw new Exception("The method or operation is not implemented.");
         }
 
-        public override void Visit(TernaryExpression expression)
+        public void Visit(TernaryExpression expression)
         {
             EncapsulateNoValue(expression.LeftExpression);
 
@@ -34,7 +34,7 @@ namespace NCalc.Domain
             EncapsulateNoValue(expression.RightExpression);
         }
 
-        public override void Visit(BinaryExpression expression)
+        public void Visit(BinaryExpression expression)
         {
             EncapsulateNoValue(expression.LeftExpression);
 
@@ -116,7 +116,7 @@ namespace NCalc.Domain
             EncapsulateNoValue(expression.RightExpression);
         }
 
-        public override void Visit(UnaryExpression expression)
+        public void Visit(UnaryExpression expression)
         {
             switch (expression.Type)
             {
@@ -136,7 +136,7 @@ namespace NCalc.Domain
             EncapsulateNoValue(expression.Expression);
         }
 
-        public override void Visit(ValueExpression expression)
+        public void Visit(ValueExpression expression)
         {
             switch (expression.Type)
             {
@@ -162,7 +162,7 @@ namespace NCalc.Domain
             }
         }
 
-        public override void Visit(Function function)
+        public void Visit(Function function)
         {
             Result.Append(function.Identifier.Name);
 
@@ -185,7 +185,7 @@ namespace NCalc.Domain
             Result.Append(") ");
         }
 
-        public override void Visit(Identifier parameter)
+        public void Visit(Identifier parameter)
         {
             Result.Append("[").Append(parameter.Name).Append("] ");
         }

@@ -7,12 +7,12 @@ namespace NCalc.Domain
 {
     public class EvaluationVisitor : IEvaluationVisitor
     {
-        private delegate T Func<T>();
+        protected delegate T Func<T>();
 
-        private readonly EvaluateOptions _options = EvaluateOptions.None;
-        private readonly CultureInfo _cultureInfo;
+        protected readonly EvaluateOptions _options = EvaluateOptions.None;
+        protected readonly CultureInfo _cultureInfo;
 
-        private bool IgnoreCase { get { return (_options & EvaluateOptions.IgnoreCase) == EvaluateOptions.IgnoreCase; } }
+        protected bool IgnoreCase { get { return (_options & EvaluateOptions.IgnoreCase) == EvaluateOptions.IgnoreCase; } }
 
         public EvaluationVisitor(EvaluateOptions options) : this(options, CultureInfo.CurrentCulture)
         {
@@ -24,9 +24,9 @@ namespace NCalc.Domain
             _cultureInfo = cultureInfo;
         }
 
-        public object Result { get; private set; }
+        public object Result { get; protected set; }
 
-        private object Evaluate(LogicalExpression expression)
+        protected object Evaluate(LogicalExpression expression)
         {
             expression.Accept(this);
             return Result;
@@ -45,7 +45,7 @@ namespace NCalc.Domain
         /// <param name="a">Type a.</param>
         /// <param name="b">Type b.</param>
         /// <returns></returns>
-        private static Type GetMostPreciseType(Type a, Type b)
+        protected virtual Type GetMostPreciseType(Type a, Type b)
         {
             foreach (Type t in CommonTypes)
             {
@@ -75,7 +75,7 @@ namespace NCalc.Domain
             return Comparer.Default.Compare(Convert.ChangeType(a, mpt, _cultureInfo), Convert.ChangeType(b, mpt));
         }
 
-        public void Visit(TernaryExpression expression)
+        public virtual void Visit(TernaryExpression expression)
         {
             // Evaluates the left expression and saves the value
             expression.LeftExpression.Accept(this);
@@ -91,14 +91,14 @@ namespace NCalc.Domain
             }
         }
 
-        private static bool IsReal(object value)
+        protected static bool IsReal(object value)
         {
             var typeCode = Type.GetTypeCode(value.GetType());
 
             return typeCode == TypeCode.Decimal || typeCode == TypeCode.Double || typeCode == TypeCode.Single;
         }
 
-        public void Visit(BinaryExpression expression)
+        public virtual void Visit(BinaryExpression expression)
         {
             // simulate Lazy<Func<>> behavior for late evaluation
             object leftValue = null;
@@ -220,7 +220,7 @@ namespace NCalc.Domain
             }
         }
 
-        public void Visit(UnaryExpression expression)
+        public virtual void Visit(UnaryExpression expression)
         {
             // Recursively evaluates the underlying expression
             expression.Expression.Accept(this);
@@ -245,12 +245,12 @@ namespace NCalc.Domain
             }
         }
 
-        public void Visit(ValueExpression expression)
+        public virtual void Visit(ValueExpression expression)
         {
             Result = expression.Value;
         }
 
-        public void Visit(Function function)
+        public virtual void Visit(Function function)
         {
             var args = new FunctionArgs
             {
@@ -634,7 +634,7 @@ namespace NCalc.Domain
             }
         }
 
-        private void CheckCase(string function, string called)
+        protected void CheckCase(string function, string called)
         {
             if (IgnoreCase)
             {
@@ -654,13 +654,13 @@ namespace NCalc.Domain
 
         public event EvaluateFunctionHandler EvaluateFunction;
 
-        private void OnEvaluateFunction(string name, FunctionArgs args)
+        protected void OnEvaluateFunction(string name, FunctionArgs args)
         {
             if (EvaluateFunction != null)
                 EvaluateFunction(name, args);
         }
 
-        public void Visit(Identifier parameter)
+        public virtual void Visit(Identifier parameter)
         {
             if (Parameters.ContainsKey(parameter.Name))
             {
@@ -701,7 +701,7 @@ namespace NCalc.Domain
 
         public event EvaluateParameterHandler EvaluateParameter;
 
-        private void OnEvaluateParameter(string name, ParameterArgs args)
+        protected void OnEvaluateParameter(string name, ParameterArgs args)
         {
             if (EvaluateParameter != null)
                 EvaluateParameter(name, args);
